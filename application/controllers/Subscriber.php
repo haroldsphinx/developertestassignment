@@ -1,13 +1,13 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH.'libraries/REST_Controller.php';
 
-class Subscriber extends REST_Controller 
+class Subscriber extends REST_Controller
 {
-    var $data = array();
+    public $data = array();
 
     public function __construct()
-     {
+    {
         parent::__construct();
         $this->load->model('subscribers_model', 'subscriber');
         $this->subscriber_state = $this->config->item('subscriber_state');
@@ -26,12 +26,12 @@ class Subscriber extends REST_Controller
      * @param zip
      * @param phone_number
      * @param state_of_origin
-     * 
+     *
      */
 
 
     public function index_get()
-      {
+    {
         $condition = array();
         $all_subscribers = $this->subscriber->get_all('', $condition);
         $this->response_ok([
@@ -39,12 +39,11 @@ class Subscriber extends REST_Controller
             'message' => count($all_subscribers) . ' data found',
             'data' => $all_subscribers
         ]);
-      } 
+    }
 
-      public function index_post($id = null)
+    public function index_post($id = null)
     {
-        if (!empty($_POST))
-        {
+        if (!empty($_POST)) {
             $email_address = addslashes($this->post('email_address'));
             $name = $this->post('name');
             $state = $this->post('state');
@@ -59,14 +58,21 @@ class Subscriber extends REST_Controller
 
             $error = array();
 
-            if (empty($email_address) && !$this->options->validate_email($email_address) == false) $error[] = "Please provide email address";
-            if (empty($name)) $error[] = 'Please provide name';
-            if (empty($state)) $error[] = 'Please provide mail state';
-            if (!$this->options->validate_email_domain($email_address) == true) $error[] = "Invalid Email Address, only a domain email address is allowed";
+            if (empty($email_address) && !$this->options->validate_email($email_address) == false) {
+                $error[] = "Please provide email address";
+            }
+            if (empty($name)) {
+                $error[] = 'Please provide name';
+            }
+            if (empty($state)) {
+                $error[] = 'Please provide mail state';
+            }
+            if (!$this->options->validate_email_domain($email_address) == true) {
+                $error[] = "Invalid Email Address, only a domain email address is allowed";
+            }
 
 
-            if (count($error) == 0) 
-            {
+            if (count($error) == 0) {
                 $subscriber_data = array(
                     'email_address' => $email_address,
                     'name' => $name,
@@ -81,18 +87,19 @@ class Subscriber extends REST_Controller
                 );
 
                 
-                if (isset($id) && is_numeric($id)) 
-                {
+                if (isset($id) && is_numeric($id)) {
                     $status = $this->subscriber->update($subscriber_data, array('id'=>$id));
-                }else{
+                } else {
                     $status = $this->subscriber->add($subscriber_data);
                 }
-                if ($status)
+                if ($status) {
                     $this->response_ok(['error' => false, 'status' => "Subscriber data Added Successfully!!!"]);
-                else
+                } else {
                     $this->response_bad(['error' => true, 'status' => "Unable to add subscriber data!"]);
-            }else
+                }
+            } else {
                 $this->response_bad(['error' => true, 'status' => $error]);
+            }
         }
     }
 
@@ -102,20 +109,22 @@ class Subscriber extends REST_Controller
         $id = $this->get('id');
         $error = array();
 
-        if (empty($id)) $error[] = 'Id Missing';
+        if (empty($id)) {
+            $error[] = 'Id Missing';
+        }
 
         if (count($error) == 0) {
             $get_subscriber = $this->subscriber->get(array('id'=>$id));
             $this->response_ok([
                 'error' => false,
                 'data' => $get_subscriber
-            ]);   
-        }else
+            ]);
+        } else {
             $this->response_bad([
                 'error' => true,
                 'data' => $error
             ]);
-
+        }
     }
 
     public function subscriber_delete()
@@ -123,22 +132,24 @@ class Subscriber extends REST_Controller
         $id = $this->get('id');
         $error = array();
 
-        if (empty($id)) $error[] = 'Id Missing';
+        if (empty($id)) {
+            $error[] = 'Id Missing';
+        }
 
         if (count($error) == 0) {
             $get_subscriber = $this->subscriber->delete(array('id'=>$id));
             $this->response_ok([
                 'error' => false,
                 'data' => $get_subscriber
-            ]);   
+            ]);
         }
     }
 
     
-    function clean_state ($state) 
+    public function clean_state($state)
     {
         switch ($state) {
-            case 'active': 
+            case 'active':
                 return $this->subscriber_state['active'];
                 break;
             case 'unsubscribed':
@@ -158,6 +169,4 @@ class Subscriber extends REST_Controller
                 break;
         }
     }
-
-    
 }

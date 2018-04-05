@@ -1,6 +1,8 @@
 <?php
 // Codeigniter access check, remove it for direct use
-if( !defined( 'BASEPATH' ) ) exit( 'No direct script access allowed' );
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  *---------------------------------------------------------------
@@ -29,4 +31,3 @@ $config['subscriber_state'] = array(
     'junk' => '3',
     'bounced' => '4'
 );
-

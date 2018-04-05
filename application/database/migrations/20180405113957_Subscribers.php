@@ -1,13 +1,14 @@
 <?php
 
-class Migration_Subscribers extends CI_Migration {
-
-    public function up() {
+class Migration_Subscribers extends CI_Migration
+{
+    public function up()
+    {
         $this->dbforge->add_field(array(
             'id' => array(
                 'type' => 'INT',
                 'constraint' => 11,
-                'auto_increment' => TRUE
+                'auto_increment' => true
             ),
             'name' => array(
                 'type' => 'VARCHAR',
@@ -65,12 +66,12 @@ class Migration_Subscribers extends CI_Migration {
             )
 
         ));
-        $this->dbforge->add_key('id', TRUE);
+        $this->dbforge->add_key('id', true);
         $this->dbforge->create_table('subscribers');
     }
 
-    public function down() {
+    public function down()
+    {
         $this->dbforge->drop_table('subscribers');
     }
-
 }

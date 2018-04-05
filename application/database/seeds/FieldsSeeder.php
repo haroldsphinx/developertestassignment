@@ -1,10 +1,11 @@
 <?php
 
-class FieldsSeeder extends Seeder {
-
+class FieldsSeeder extends Seeder
+{
     private $table = 'fields';
 
-    public function run() {
+    public function run()
+    {
         $this->db->truncate($this->table);
 
         //seed records manually

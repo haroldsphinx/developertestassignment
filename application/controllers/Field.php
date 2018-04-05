@@ -1,25 +1,25 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH.'libraries/REST_Controller.php';
 
-class Field extends REST_Controller 
+class Field extends REST_Controller
 {
-    var $data = array();
+    public $data = array();
 
     public function __construct()
-     {
+    {
         parent::__construct();
         $this->load->model('fields_model', 'field');
     }
 
-     /**
-      * Field Resources
-      * @param  title
-      * @param  type
-      */
+    /**
+     * Field Resources
+     * @param  title
+     * @param  type
+     */
 
     public function index_get()
-      {
+    {
         $condition = array();
         $all_fields = $this->field->get_all('', $condition);
         $this->response_ok([
@@ -27,23 +27,24 @@ class Field extends REST_Controller
             'message' => count($all_fields) . ' data found',
             'data' => $all_fields
         ]);
-      } 
+    }
 
     public function field_get()
     {
         $id = $this->get('id');
         $error = array();
 
-        if (empty($id)) $error[] = 'Id Missing';
+        if (empty($id)) {
+            $error[] = 'Id Missing';
+        }
 
         if (count($error) == 0) {
             $get_field = $this->field->get(array('id'=>$id));
             $this->response_ok([
                 'error' => false,
                 'data' => $get_field
-            ]);   
+            ]);
         }
-
     }
 
     public function field_delete()
@@ -51,55 +52,55 @@ class Field extends REST_Controller
         $id = $this->get('id');
         $error = array();
 
-        if (empty($id)) $error[] = 'Id Missing';
+        if (empty($id)) {
+            $error[] = 'Id Missing';
+        }
 
         if (count($error) == 0) {
             $get_field = $this->field->delete(array('id'=>$id));
             $this->response_ok([
                 'error' => false,
                 'data' => $get_field
-            ]);   
+            ]);
         }
     }
 
     public function index_post($id = null)
     {
-        if (!empty($_POST))
-        {
+        if (!empty($_POST)) {
             $title = $this->post('title');
             $type = $this->post('type');
             
             $error = array();
 
-            if (empty($title)) $error[] = 'Please provide field title';
-            if (empty($type)) $error[] = 'Please provide field type';
+            if (empty($title)) {
+                $error[] = 'Please provide field title';
+            }
+            if (empty($type)) {
+                $error[] = 'Please provide field type';
+            }
 
 
-            if (count($error) == 0) 
-            {
+            if (count($error) == 0) {
                 $field_data = array(
                     'title' => $title,
                     'type' => $type
                 );
 
                 
-                if (isset($id) && is_numeric($id)) 
-                {
+                if (isset($id) && is_numeric($id)) {
                     $status = $this->field->update($field_data, array('id'=>$id));
-                }else{
+                } else {
                     $status = $this->field->add($field_data);
                 }
-                if ($status)
+                if ($status) {
                     $this->response_ok(['error' => false, 'status' => "field data Added Successfully!!!"]);
-                else
+                } else {
                     $this->response_bad(['error' => true, 'status' => "Unable to add field data!"]);
-            }else
+                }
+            } else {
                 $this->response_bad(['error' => true, 'status' => $error]);
+            }
         }
     }
-
-
-      
-
-    
 }

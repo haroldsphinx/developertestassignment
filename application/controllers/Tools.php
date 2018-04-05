@@ -2,9 +2,10 @@
 
 require APPPATH.'database/Seeder.php';
 
-class Tools extends CI_Controller {
-
-    public function __construct() {
+class Tools extends CI_Controller
+{
+    public function __construct()
+    {
         parent::__construct();
 
         // can only be called from the command line
@@ -18,11 +19,13 @@ class Tools extends CI_Controller {
         $this->faker = Faker\Factory::create();
     }
 
-    public function message($to = 'World') {
+    public function message($to = 'World')
+    {
         echo "Hello {$to}!" . PHP_EOL;
     }
 
-    public function help() {
+    public function help()
+    {
         $result = "The following are the available command line interface commands\n\n";
         $result .= "php index.php tools migration \"file_name\"         Create new migration file\n";
         $result .= "php index.php tools migrate [\"version_number\"]    Run all migrations. The version number is optional.\n";
@@ -32,15 +35,17 @@ class Tools extends CI_Controller {
         echo $result . PHP_EOL;
     }
 
-    public function migration($name) {
+    public function migration($name)
+    {
         $this->make_migration_file($name);
     }
 
-    public function migrate($version = null) {
+    public function migrate($version = null)
+    {
         $this->load->library('migration');
 
         if ($version != null) {
-            if ($this->migration->version($version) === FALSE) {
+            if ($this->migration->version($version) === false) {
                 show_error($this->migration->error_string());
             } else {
                 echo "Migrations run successfully" . PHP_EOL;
@@ -49,24 +54,27 @@ class Tools extends CI_Controller {
             return;
         }
 
-        if ($this->migration->latest() === FALSE) {
+        if ($this->migration->latest() === false) {
             show_error($this->migration->error_string());
         } else {
             echo "Migrations run successfully" . PHP_EOL;
         }
     }
 
-    public function seeder($name) {
+    public function seeder($name)
+    {
         $this->make_seed_file($name);
     }
 
-    public function seed($name) {
+    public function seed($name)
+    {
         $seeder = new Seeder();
 
         $seeder->call($name);
     }
 
-    protected function make_migration_file($name) {
+    protected function make_migration_file($name)
+    {
         $date = new DateTime();
         $timestamp = $date->format('YmdHis');
 
@@ -105,7 +113,8 @@ class Migration_$name extends CI_Migration {
         echo "$path migration has successfully been created." . PHP_EOL;
     }
 
-    protected function make_seed_file($name) {
+    protected function make_seed_file($name)
+    {
         $path = APPPATH . "database/seeds/$name.php";
 
         $my_seed = fopen($path, "w") or die("Unable to create seed file!");
@@ -152,5 +161,4 @@ class $name extends Seeder {
 
         echo "$path seeder has successfully been created." . PHP_EOL;
     }
-
 }

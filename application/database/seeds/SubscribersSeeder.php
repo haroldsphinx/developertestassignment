@@ -1,10 +1,11 @@
 <?php
 
-class SubscribersSeeder extends Seeder {
-
+class SubscribersSeeder extends Seeder
+{
     private $table = 'subscribers';
 
-    public function run() {
+    public function run()
+    {
         $this->db->truncate($this->table);
 
         //seed records manually

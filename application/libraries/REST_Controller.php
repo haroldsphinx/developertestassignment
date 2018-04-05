@@ -185,7 +185,6 @@ abstract class REST_Controller extends CI_Controller
      */
     protected function early_checks()
     {
-
     }
 
     /**
@@ -249,10 +248,11 @@ abstract class REST_Controller extends CI_Controller
         }
 
         // Merge both for one mega-args variable
-        $this->_args = array_merge($this->_get_args,
+        $this->_args = array_merge(
+            $this->_get_args,
             $this->_options_args,
             $this->_patch_args,
-            $this->_head_args ,
+            $this->_head_args,
             $this->_put_args,
             $this->_post_args,
             $this->_delete_args,
@@ -329,7 +329,6 @@ abstract class REST_Controller extends CI_Controller
         if (config_item('rest_enable_logging')) {
             $this->_log_access_time();
         }
-
     }
 
     /**
@@ -382,7 +381,7 @@ abstract class REST_Controller extends CI_Controller
         }
 
         // Sure it exists, but can they do anything with it?
-        if ( ! method_exists($this, $controller_method)) {
+        if (! method_exists($this, $controller_method)) {
             $this->response(array(config_item('rest_status_field_name') => false, config_item('rest_message_field_name') => 'Unknown method.'), 404);
         }
 
@@ -411,7 +410,7 @@ abstract class REST_Controller extends CI_Controller
         }
 
         // No key stuff, but record that stuff is happening
-        else if (config_item('rest_enable_logging') and $log_method) {
+        elseif (config_item('rest_enable_logging') and $log_method) {
             $this->_log_request($authorized = true);
         }
 
@@ -453,7 +452,7 @@ abstract class REST_Controller extends CI_Controller
         }
 
         // If data is null but http code provided, keep the output empty
-        else if ($data === null && is_numeric($http_code)) {
+        elseif ($data === null && is_numeric($http_code)) {
             $output = null;
         }
 
@@ -499,18 +498,18 @@ abstract class REST_Controller extends CI_Controller
         // but it will not modify the content-length header to compensate for
         // the reduction, causing the browser to hang waiting for more data.
         // We'll just skip content-length in those cases.
-        if ( ! $this->_zlib_oc && ! $this->config->item('compress_output')) {
+        if (! $this->_zlib_oc && ! $this->config->item('compress_output')) {
             header('Content-Length: ' . strlen($output));
         }
 
         header('Access-Control-Allow-Origin:*');
 
-        if($continue){
+        if ($continue) {
             echo($output);
             ob_end_flush();
             ob_flush();
             flush();
-        }else{
+        } else {
             exit($output);
         }
     }
@@ -611,7 +610,7 @@ abstract class REST_Controller extends CI_Controller
         } // End HTTP_ACCEPT checking
 
         // Well, none of that has worked! Let's see if the controller has a default
-        if ( ! empty($this->rest_format)) {
+        if (! empty($this->rest_format)) {
             return $this->rest_format;
         }
 
@@ -667,7 +666,7 @@ abstract class REST_Controller extends CI_Controller
 
         // Find the key from server or arguments
         if (($key = isset($this->_args[$api_key_variable]) ? $this->_args[$api_key_variable] : $this->input->server($key_name))) {
-            if ( ! ($row = $this->rest->db->where(config_item('rest_key_column'), $key)->get(config_item('rest_keys_table'))->row())) {
+            if (! ($row = $this->rest->db->where(config_item('rest_key_column'), $key)->get(config_item('rest_keys_table'))->row())) {
                 return false;
             }
 
@@ -721,7 +720,7 @@ abstract class REST_Controller extends CI_Controller
      */
     protected function _detect_lang()
     {
-        if ( ! $lang = $this->input->server('HTTP_ACCEPT_LANGUAGE')) {
+        if (! $lang = $this->input->server('HTTP_ACCEPT_LANGUAGE')) {
             return null;
         }
 
@@ -779,7 +778,7 @@ abstract class REST_Controller extends CI_Controller
     protected function _check_limit($controller_method)
     {
         // They are special, or it might not even have a limit
-        if ( ! empty($this->rest->ignore_limits) or !isset($this->methods[$controller_method]['limit'])) {
+        if (! empty($this->rest->ignore_limits) or !isset($this->methods[$controller_method]['limit'])) {
             // On your way sonny-jim.
             return true;
         }
@@ -795,7 +794,7 @@ abstract class REST_Controller extends CI_Controller
             ->row();
 
         // No calls yet for this key
-        if ( ! $result ) {
+        if (! $result) {
             // Right, set one up from scratch
             $this->rest->db->insert(config_item('rest_limits_table'), array(
                 'uri' => $this->uri->uri_string(),
@@ -806,7 +805,7 @@ abstract class REST_Controller extends CI_Controller
         }
 
         // Been an hour since they called
-        else if ($result->hour_started < time() - (60 * 60)) {
+        elseif ($result->hour_started < time() - (60 * 60)) {
             // Reset the started period
             $this->rest->db
                 ->where('uri', $this->uri->uri_string())
@@ -853,30 +852,26 @@ abstract class REST_Controller extends CI_Controller
         }
 
         // check for wildcard flag for rules for classes
-        if(!empty($this->overrides_array[$this->router->class]['*'])){//check for class overides
+        if (!empty($this->overrides_array[$this->router->class]['*'])) {//check for class overides
             // None auth override found, prepare nothing but send back a true override flag
-            if ($this->overrides_array[$this->router->class]['*'] == 'none')
-            {
+            if ($this->overrides_array[$this->router->class]['*'] == 'none') {
                 return true;
             }
 
             // Basic auth override found, prepare basic
-            if ($this->overrides_array[$this->router->class]['*'] == 'basic')
-            {
+            if ($this->overrides_array[$this->router->class]['*'] == 'basic') {
                 $this->_prepare_basic_auth();
                 return true;
             }
 
             // Digest auth override found, prepare digest
-            if ($this->overrides_array[$this->router->class]['*'] == 'digest')
-            {
+            if ($this->overrides_array[$this->router->class]['*'] == 'digest') {
                 $this->_prepare_digest_auth();
                 return true;
             }
 
             // Whitelist auth override found, check client's ip against config whitelist
-            if ($this->overrides_array[$this->router->class]['*'] == 'whitelist')
-            {
+            if ($this->overrides_array[$this->router->class]['*'] == 'whitelist') {
                 $this->_check_whitelist_auth();
                 return true;
             }
@@ -961,7 +956,6 @@ abstract class REST_Controller extends CI_Controller
         else {
             parse_str(file_get_contents('php://input'), $this->_put_args);
         }
-
     }
 
     /**
@@ -1191,7 +1185,6 @@ abstract class REST_Controller extends CI_Controller
         $ldapconn = ldap_connect($ldaphost, $ldapport);
 
         if ($ldapconn) {
-
             log_message('debug', 'Setting timeout to ' . $ldaptimeout . ' seconds');
 
             ldap_set_option($ldapconn, LDAP_OPT_NETWORK_TIMEOUT, $ldaptimeout);
@@ -1209,11 +1202,10 @@ abstract class REST_Controller extends CI_Controller
 
                 return false;
             }
-
         }
 
         // search for user
-        if (($res_id = ldap_search( $ldapconn, $ldapbasedn, "uid=$username")) == false) {
+        if (($res_id = ldap_search($ldapconn, $ldapbasedn, "uid=$username")) == false) {
             log_message('error', 'LDAP Auth: User ' . $username . ' not found in search');
 
             return false;
@@ -1225,13 +1217,13 @@ abstract class REST_Controller extends CI_Controller
             return false;
         }
 
-        if (( $entry_id = ldap_first_entry($ldapconn, $res_id))== false) {
+        if (($entry_id = ldap_first_entry($ldapconn, $res_id))== false) {
             log_message('error', 'LDAP Auth: failure, entry of searchresult could not be fetched');
 
             return false;
         }
 
-        if (( $user_dn = ldap_get_dn($ldapconn, $entry_id)) == false) {
+        if (($user_dn = ldap_get_dn($ldapconn, $entry_id)) == false) {
             log_message('error', 'LDAP Auth: failure, user-dn could not be fetched');
 
             return false;
@@ -1371,7 +1363,7 @@ abstract class REST_Controller extends CI_Controller
             }
         }
 
-        if ( ! $this->_check_login($username, $password)) {
+        if (! $this->_check_login($username, $password)) {
             $this->_force_login();
         }
     }
@@ -1410,7 +1402,7 @@ abstract class REST_Controller extends CI_Controller
 
         // For digest authentication the library function should return already stored md5(username:restrealm:password) for that username @see rest.php::auth_library_function config
         $A1 = $this->_check_login($digest['username'], true);
-        if ( ! array_key_exists('username', $digest) or ! $A1 ) {
+        if (! array_key_exists('username', $digest) or ! $A1) {
             $this->_force_login($uniqid);
         }
 
@@ -1430,7 +1422,7 @@ abstract class REST_Controller extends CI_Controller
     {
         $blacklist = explode(',', config_item('rest_ip_blacklist'));
 
-        foreach ($blacklist AS &$ip) {
+        foreach ($blacklist as &$ip) {
             $ip = trim($ip);
         }
 
@@ -1448,11 +1440,11 @@ abstract class REST_Controller extends CI_Controller
 
         array_push($whitelist, '127.0.0.1', '0.0.0.0');
 
-        foreach ($whitelist AS &$ip) {
+        foreach ($whitelist as &$ip) {
             $ip = trim($ip);
         }
 
-        if ( ! in_array($this->input->ip_address(), $whitelist)) {
+        if (! in_array($this->input->ip_address(), $whitelist)) {
             $this->response(array(config_item('rest_status_field_name') => false, config_item('rest_message_field_name') => 'IP not authorized'), 401);
         }
     }
@@ -1464,9 +1456,9 @@ abstract class REST_Controller extends CI_Controller
      */
     protected function _force_login($nonce = '')
     {
-        if (strtolower( $this->config->item('rest_auth') ) == 'basic') {
+        if (strtolower($this->config->item('rest_auth')) == 'basic') {
             header('WWW-Authenticate: Basic realm="'.$this->config->item('rest_realm').'"');
-        } elseif (strtolower( $this->config->item('rest_auth') ) == 'digest') {
+        } elseif (strtolower($this->config->item('rest_auth')) == 'digest') {
             header('WWW-Authenticate: Digest realm="'.$this->config->item('rest_realm').'", qop="auth", nonce="'.$nonce.'", opaque="'.md5($this->config->item('rest_realm')).'"');
         }
 
@@ -1482,7 +1474,7 @@ abstract class REST_Controller extends CI_Controller
     protected function _force_loopable($data)
     {
         // Force it to be something useful
-        if ( ! is_array($data) and !is_object($data)) {
+        if (! is_array($data) and !is_object($data)) {
             $data = (array) $data;
         }
 
@@ -1533,37 +1525,37 @@ abstract class REST_Controller extends CI_Controller
 
     /** SECTION FOR RESPONSE DEFINITION **/
 
-    public function response_ok($response){
+    public function response_ok($response)
+    {
         $this->responseArray['status'] = true;
         $this->responseArray['response'] = $response;
-        $this->response($this->responseArray,200);
+        $this->response($this->responseArray, 200);
     }
 
-    public function response_bad($error_string,$reasons=array()){
+    public function response_bad($error_string, $reasons=array())
+    {
         $this->responseArray['status'] = false;
         $this->responseArray['error'] = $error_string;
         $this->responseArray['error-reasons'] = $reasons;
-        $this->response($this->responseArray,200);
+        $this->response($this->responseArray, 200);
     }
 
 
-    public function response_auth($error_string,$reasons=array()){
+    public function response_auth($error_string, $reasons=array())
+    {
         $this->responseArray['status'] = false;
         $this->responseArray['error'] = $error_string;
         $this->responseArray['error-reasons'] = $reasons;
-        $this->response($this->responseArray,200);
+        $this->response($this->responseArray, 200);
     }
 
-    public function response_server($error_string,$reasons=array()){
+    public function response_server($error_string, $reasons=array())
+    {
         $this->responseArray['status'] = false;
         $this->responseArray['error'] = $error_string;
         $this->responseArray['error-reasons'] = $reasons;
-        $this->response($this->responseArray,200);
+        $this->response($this->responseArray, 200);
     }
 
     /** SECTION FOR RESPONSE DEFINITION **/
-
-
-
-
 }

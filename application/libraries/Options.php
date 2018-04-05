@@ -14,7 +14,7 @@ class Options
         $this->ci =& get_instance();
     }
 
-    public function curl($url, $username = '', $password = '') 
+    public function curl($url, $username = '', $password = '')
     {
         $ch = curl_init();
         $content_header = 'Content-Type: application/json';
@@ -24,8 +24,7 @@ class Options
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, false);
 
-        if (!empty($username) && !empty($password))
-        {
+        if (!empty($username) && !empty($password)) {
             curl_setopt($ch, CURLOPT_USERPWD, $username . ':' . $password);
         }
 
@@ -40,7 +39,9 @@ class Options
 
     public function validate_email($email_address)
     {
-        if (filter_var($email_address, FILTER_VALIDATE_EMAIL)) return true; 
+        if (filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
     }
 
     public function validate_email_domain($email_address)
@@ -51,9 +52,15 @@ class Options
 
     public function is_complete_user_profile(array $user_profile)
     {
-        if (!isset($user_profile['email_address']) || empty($user_profile['email_address'])) return true;
-        if (!isset($user_profile['name']) || empty($user_profile['name'])) return true;
-        if (!isset($user_profile['state']) || empty($user_profile['state'])) return true;
+        if (!isset($user_profile['email_address']) || empty($user_profile['email_address'])) {
+            return true;
+        }
+        if (!isset($user_profile['name']) || empty($user_profile['name'])) {
+            return true;
+        }
+        if (!isset($user_profile['state']) || empty($user_profile['state'])) {
+            return true;
+        }
 
         return false;
     }
@@ -65,34 +72,21 @@ class Options
         $phone_number = str_replace('+', '', $phone_number);
 
         if (preg_match('/^'.$zip.'/i', $phone_number) == true) {
-
             $phone_number = '0' . substr($phone_number, 3);
-
         }
 
         if (strlen($phone_number) == 11) {
-
             $phone_number = $zip . substr($phone_number, 1);
-
-        }
-        else {
-
+        } else {
             if (strpos($phone_number, '+') == false) {
-
                 $phone_number = '+' . $phone_number;
-
             }
-
         }
 
         if ($plus == false) {
-
             $phone_number = str_replace('+', '', $phone_number);
-
         }
 
         return $phone_number;
     }
-
-    
 }
