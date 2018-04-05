@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Subscriber_Model extends CI_Model {
+class Subscribers_Model extends CI_Model {
 	
 	private $subscriber =  null;
 

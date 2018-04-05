@@ -9,7 +9,7 @@ class Subscriber extends REST_Controller
     public function __construct()
      {
         parent::__construct();
-        $this->load->model('subscriber_model', 'subscriber');
+        $this->load->model('subscribers_model', 'subscriber');
         $this->subscriber_state = $this->config->item('subscriber_state');
     }
 
