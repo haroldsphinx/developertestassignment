@@ -17,16 +17,18 @@ class Subscriber extends REST_Controller
      * Subscriber Resource Endpoint
      * @param email_address
      * @param name
+     * @param lastname
      * @param state
+     * @param company
+     * @param country
+     * @param city
+     * @param state
+     * @param zip
+     * @param phone_number
+     * @param state_of_origin
      * 
      */
 
-
-     /**
-      * Field Resources
-      * @param  title
-      * @param  type
-      */
 
     public function index_get()
       {
@@ -39,40 +41,7 @@ class Subscriber extends REST_Controller
         ]);
       } 
 
-    public function subscriber_get()
-    {
-        $id = $this->get('id');
-        $error = array();
-
-        if (empty($id)) $error[] = 'Id Missing';
-
-        if (count($error) == 0) {
-            $get_subscriber = $this->subscriber->get(array('id'=>$id));
-            $this->response_ok([
-                'error' => false,
-                'data' => $get_subscriber
-            ]);   
-        }
-
-    }
-
-    public function subscriber_delete_get()
-    {
-        $id = $this->get('id');
-        $error = array();
-
-        if (empty($id)) $error[] = 'Id Missing';
-
-        if (count($error) == 0) {
-            $get_subscriber = $this->subscriber->delete(array('id'=>$id));
-            $this->response_ok([
-                'error' => false,
-                'data' => $get_subscriber
-            ]);   
-        }
-    }
-
-    public function index_post($id = null)
+      public function index_post($id = null)
     {
         if (!empty($_POST))
         {
@@ -128,23 +97,44 @@ class Subscriber extends REST_Controller
     }
 
 
-    function subsciber_get_all()
+    public function subscriber_get()
     {
-        
+        $id = $this->get('id');
+        $error = array();
+
+        if (empty($id)) $error[] = 'Id Missing';
+
+        if (count($error) == 0) {
+            $get_subscriber = $this->subscriber->get(array('id'=>$id));
+            $this->response_ok([
+                'error' => false,
+                'data' => $get_subscriber
+            ]);   
+        }else
+            $this->response_bad([
+                'error' => true,
+                'data' => $error
+            ]);
+
     }
 
-
-
-    function validate_input() 
+    public function subscriber_delete()
     {
-        $email_address = $this->post('email_address');
-        $name = $this->post('name');
-        $state = $this->post('state');
+        $id = $this->get('id');
+        $error = array();
 
-        if (empty(email_address)) $error[] = 'Provide Email Address';
-        
+        if (empty($id)) $error[] = 'Id Missing';
+
+        if (count($error) == 0) {
+            $get_subscriber = $this->subscriber->delete(array('id'=>$id));
+            $this->response_ok([
+                'error' => false,
+                'data' => $get_subscriber
+            ]);   
+        }
     }
 
+    
     function clean_state ($state) 
     {
         switch ($state) {
@@ -168,10 +158,6 @@ class Subscriber extends REST_Controller
                 break;
         }
     }
-
-    
-
-   
 
     
 }

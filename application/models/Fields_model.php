@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Field_Model extends CI_Model {
+class Fields_Model extends CI_Model {
 	
 	private $field =  null;
 

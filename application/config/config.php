@@ -23,8 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$_base_url = getenv("APP_BASE_URL");
-$config['base_url'] = $_base_url ? $_base_url : 'http://localhost/Mailerlite/';
+$config['base_url'] = 'http://localhost/Mailerlite/';
 
 /*
 |--------------------------------------------------------------------------

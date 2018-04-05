@@ -2,25 +2,15 @@
 
 require APPPATH.'libraries/REST_Controller.php';
 
-class field extends REST_Controller 
+class Field extends REST_Controller 
 {
     var $data = array();
 
     public function __construct()
      {
         parent::__construct();
-        $this->load->model('field_model', 'field');
-        $this->field_state = $this->config->item('field_state');
+        $this->load->model('fields_model', 'field');
     }
-
-    /**
-     * field Resource Endpoint
-     * @param email_address
-     * @param name
-     * @param state
-     * 
-     */
-
 
      /**
       * Field Resources
@@ -56,7 +46,7 @@ class field extends REST_Controller
 
     }
 
-    public function field_delete_get()
+    public function field_delete()
     {
         $id = $this->get('id');
         $error = array();

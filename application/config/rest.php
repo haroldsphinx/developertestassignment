@@ -403,7 +403,7 @@ $config['rest_logs_table'] = 'logs';
 |    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |
 */
-$config['rest_enable_access'] = FALSE;
+$config['rest_enable_access'] = TRUE;
 /*
 |--------------------------------------------------------------------------
 | REST API Access Table Name
@@ -545,7 +545,7 @@ $config['allowed_cors_methods'] = [
 | source domain
 |
 */
-$config['allow_any_cors_domain'] = FALSE;
+$config['allow_any_cors_domain'] = TRUE;
 /*
 |--------------------------------------------------------------------------
 | CORS Allowable Domains
