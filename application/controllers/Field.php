@@ -29,7 +29,7 @@ class Field extends REST_Controller
         ]);
     }
 
-    public function field_get()
+    public function get_field_by_id_get()
     {
         $id = $this->get('id');
         $error = array();
@@ -47,7 +47,7 @@ class Field extends REST_Controller
         }
     }
 
-    public function field_delete()
+    public function delete_field_get()
     {
         $id = $this->get('id');
         $error = array();
@@ -63,6 +63,54 @@ class Field extends REST_Controller
                 'data' => $get_field
             ]);
         }
+    }
+
+    public function edit_field_post()
+    {
+        if (empty($_POST))
+        {
+            $id = $this->post('id');
+            $title = $this->post('title');
+            $type = $this->post('type');
+            $error = array();
+
+            if (empty($id)) {
+                $error[] = 'Please provide subscriber id you wish to modify';
+            }
+
+           
+            if (empty($title)) {
+                $error[] = 'Please provide field title';
+            }
+            if (empty($type)) {
+                $error[] = 'Please provide field type';
+            }
+            
+
+            if (count($error) == 0) {
+                $field_data = array(
+                    'title' => $title,
+                    'type' => $type
+                );
+
+                $status = $this->field->update(array($field_data, 'id' => $id));
+
+                if ($status) {
+                    $this->response_ok([
+                        'error' => false,
+                        'status' => "Field data updated successfully!"
+                    ]);
+                }else {
+                     $this->response_bad([
+                        'error' => true,
+                        'status' => "Unable to update field info!"
+                    ]);
+                }
+
+            }
+
+        }
+        
     }
 
     public function index_post($id = null)

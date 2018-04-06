@@ -41,8 +41,9 @@ class Subscriber extends REST_Controller
         ]);
     }
 
-    public function index_post($id = null)
+    public function index_post()
     {
+        
         if (!empty($_POST)) {
             $email_address = addslashes($this->post('email_address'));
             $name = $this->post('name');
@@ -86,12 +87,8 @@ class Subscriber extends REST_Controller
                     'state_of_origin' => $state_of_origin
                 );
 
+                $status = $this->subscriber->add($subscriber_data);
                 
-                if (isset($id) && is_numeric($id)) {
-                    $status = $this->subscriber->update($subscriber_data, array('id'=>$id));
-                } else {
-                    $status = $this->subscriber->add($subscriber_data);
-                }
                 if ($status) {
                     $this->response_ok(['error' => false, 'status' => "Subscriber data Added Successfully!!!"]);
                 } else {
@@ -113,6 +110,19 @@ class Subscriber extends REST_Controller
             $error[] = 'Id Missing';
         }
 
+        if (empty($email_address) && !$this->options->validate_email($email_address) == false) {
+            $error[] = "Please provide email address";
+        }
+        if (empty($name)) {
+            $error[] = 'Please provide name';
+        }
+        if (empty($state)) {
+            $error[] = 'Please provide mail state';
+        }
+        if (!$this->options->validate_email_domain($email_address) == true) {
+            $error[] = "Invalid Email Address, only a domain email address is allowed";
+        }
+
         if (count($error) == 0) {
             $get_subscriber = $this->subscriber->get(array('id'=>$id));
             $this->response_ok([
@@ -127,7 +137,75 @@ class Subscriber extends REST_Controller
         }
     }
 
-    public function subscriber_delete()
+    public function edit_subscriber_post()
+    {
+        if (empty($_POST))
+        {
+            $id = $this->post('id');
+            $email_address = $this->post('email_address');
+            $name = $this->post('name');
+            $state = $this->post('state');
+            $lastname = $this->post('lastname');
+            $company = $this->post('company');
+            $country = $this->post('country');
+            $city = $this->post('city');
+            $phone_number = $this->post('phone');
+            $state_of_origin = $this->post('state_of_origin');
+            $zip = $this->post('zip');
+            $error = array();
+
+            if (empty($id)) {
+                $error[] = 'Please provide subscriber id you wish to modify';
+            }
+
+            if (empty($email_address) && !$this->options->validate_email($email_address) == false) {
+                $error[] = "Please provide email address";
+            }
+            if (empty($name)) {
+                $error[] = 'Please provide name';
+            }
+            if (empty($state)) {
+                $error[] = 'Please provide mail state';
+            }
+            if (!$this->options->validate_email_domain($email_address) == true) {
+                $error[] = "Invalid Email Address, only a domain email address is allowed";
+            }
+
+            if (count($error) == 0) {
+                $subscriber_data = array(
+                    'email_address' => $email_address,
+                    'name' => $name,
+                    'state' => $this->clean_state($state),
+                    'lastname' => $lastname,
+                    'company' => $company,
+                    'country' => $country,
+                    'city' => $city,
+                    'zip' => $zip,
+                    'phone_number' => $this->options->phone_number_sanitizer($phone_number, $zip),
+                    'state_of_origin' => $state_of_origin
+                );
+
+                $status = $this->subscriber->update(array($subscriber_data, 'id' => $id));
+
+                if ($status) {
+                    $this->response_ok([
+                        'error' => false,
+                        'status' => "Subscriber data updated successfully!"
+                    ]);
+                }else {
+                     $this->response_bad([
+                        'error' => true,
+                        'status' => "Unable to update subscriber info!"
+                    ]);
+                }
+
+            }
+
+        }
+        
+    }
+
+    public function delete_subscriber_get()
     {
         $id = $this->get('id');
         $error = array();
@@ -146,7 +224,7 @@ class Subscriber extends REST_Controller
     }
 
     
-    public function clean_state($state)
+    function clean_state($state)
     {
         switch ($state) {
             case 'active':
