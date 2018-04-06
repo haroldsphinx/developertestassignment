@@ -27,17 +27,16 @@ Field's resource should contain those fields at least: title, type (date, number
 Each subscriber can have many fields.
 
 
-##################################################
+######################
 Instructions on how to run the solution proferred
-##################################################
-
+######################
 
 *******************
 Setting up Manually
 *******************
 
 
-***********************************************************************************************
+*********************
 1. Clone the repo to your local environment 
     `git clone https://github.com/haroldsphinx/developertestassignment.git`
 2. Create a database name and set the Configuration in your your database settings 'application/config/database.php'
@@ -45,12 +44,11 @@ Setting up Manually
 4. run  ` php index.php tools seed SubscriberssSeeder &&  php index.php tools seed FieldSeeder` to populate your database with sample data
 5. configure your base url in the config folder `application/config/config.php`, you can also set it as environment varaibles in your nginx/apache config
 6. Access your base_url from the browser and you should get a json response.
-***********************************************************************************************
+*******************
 
-
-######################################################################################################################################################
+########################################
 In the Application Folder, I attached a postman collection to make it easy for you to access the resources
-######################################################################################################################################################
+########################################
 
 
 
@@ -58,10 +56,9 @@ In the Application Folder, I attached a postman collection to make it easy for y
 
 
 
-
-######################################################################################################################################################
+############################
 If you are not comfortable with the postman collection, this is a simple api documentation you can relate with
-######################################################################################################################################################
+###########################
 
 
 **Title**
